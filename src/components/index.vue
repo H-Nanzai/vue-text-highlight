@@ -1,10 +1,10 @@
 <script>
-import highlightChunks from "./highlightChunks";
+import highlightChunks from './highlightChunks';
 
 const classAndStyleTypes = [Object, Array, String];
 
 export default {
-  name: "text-highlight",
+  name: 'text-highlight',
   props: {
     highQueries: [Array, String, RegExp],
     dicQueries: [Array, String, RegExp],
@@ -14,23 +14,23 @@ export default {
     highlightClass: classAndStyleTypes,
     highlightComponent: {
       type: [String, Object],
-      default: "mark"
+      default: 'mark'
     },
     dictionaryStyle: classAndStyleTypes,
     dictionaryClass: classAndStyleTypes,
     dictionaryComponent: {
       type: [String, Object],
-      default: "span"
+      default: 'span',
     }
   },
   data() {
     return {
-      text: ""
+      text: '',
     };
   },
   /**
    * Unless `h` is given as parameter, testing (Jest) will yield error:
-   *    TypeError: unknown: Duplicate declaration "h"
+   *    TypeError: unknown: Duplicate declaration 'h'
    *    (This is an error on an internal node. Probably an internal error)
    *
    * Seems babel-plugin-transform-vue-jsx make strange behaivor.
@@ -46,7 +46,7 @@ export default {
             text
           ) : (
             <this.highlightComponent
-              class={["text__highlight", this.highlightClass]}
+              class={['text__highlight', this.highlightClass]}
               style={this.highlightStyle}
               key={highlightIndex}
               index={highlightIndex}
@@ -70,14 +70,14 @@ export default {
     setTextFromSlot() {
       const defaultSlot = this.$slots.default;
 
-      if (!defaultSlot) this.text = "";
+      if (!defaultSlot) this.text = '';
       else if (
         defaultSlot[0].tag !== undefined &&
-        process.env.NODE_ENV !== "production"
+        process.env.NODE_ENV !== 'production'
       ) {
         /* eslint-disable-next-line no-console */
-        console.warn("children of <text-highlight> must be a plain string.");
-        this.text = "";
+        console.warn('children of <text-highlight> must be a plain string.');
+        this.text = '';
       } else {
         this.text = defaultSlot[0].text;
       }
@@ -87,7 +87,7 @@ export default {
     attributes() {
       return {
         props: this.$attrs,
-        on: this.$listeners
+        on: this.$listeners,
       };
     },
     highlights() {
@@ -96,18 +96,18 @@ export default {
         highQueries,
         dicQueries,
         caseSensitive,
-        diacriticsSensitive
+        diacriticsSensitive,
       } = this;
       return highlightChunks(text, highQueries, dicQueries, {
         caseSensitive,
-        diacriticsSensitive
+        diacriticsSensitive,
       });
     }
   }
 };
 </script>
 
-<style lang="scss">
+<style lang='scss'>
 .text__highlight {
   background: rgb(255, 204, 0);
   border-radius: 3px;
