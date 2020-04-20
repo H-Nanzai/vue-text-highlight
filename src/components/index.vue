@@ -1,6 +1,5 @@
 <script>
 import highlightChunks from "./highlightChunks";
-import dictionaryChunks from "./dictionaryChunks";
 
 const classAndStyleTypes = [Object, Array, String];
 
