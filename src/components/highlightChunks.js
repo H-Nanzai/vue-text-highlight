@@ -1,28 +1,62 @@
-import { indicesOf, mergeRange } from '../utils';
+import { indicesOf, mergeRange } from "../utils";
 
 export default function highlightChunks(
   text,
-  queriesOrQuery,
-  { caseSensitive = false, diacriticsSensitive = false } = {},
+  highQueriesOrQuery,
+  dicQueriesOrQuery,
+  { caseSensitive = false, diacriticsSensitive = false } = {}
 ) {
-  let queries = queriesOrQuery;
-  if (typeof queriesOrQuery === 'string' || queriesOrQuery instanceof RegExp) {
-    queries = [queriesOrQuery];
-  } else if (!Array.isArray(queriesOrQuery)) {
-    if (process.env.NODE_ENV !== 'production') {
-      throw new Error('queries must be either string, array of strings or regex.');
+  let highQueries = highQueriesOrQuery;
+  if (
+    typeof highQueriesOrQuery === "string" ||
+    highQueriesOrQuery instanceof RegExp
+  ) {
+    highQueries = [highQueriesOrQuery];
+  } else if (!Array.isArray(highQueriesOrQuery)) {
+    if (process.env.NODE_ENV !== "production") {
+      throw new Error(
+        "queries must be either string, array of strings or regex."
+      );
     } else {
       return [];
     }
   }
 
-  const matches = [];
+  let dicQueries = dicQueriesOrQuery;
+  if (
+    typeof dicQueriesOrQuery === "string" ||
+    dicQueriesOrQuery instanceof RegExp
+  ) {
+    dicQueries = [dicQueriesOrQuery];
+  } else if (!Array.isArray(dicQueriesOrQuery)) {
+    if (process.env.NODE_ENV !== "production") {
+      throw new Error(
+        "queries must be either string, array of strings or regex."
+      );
+    } else {
+      return [];
+    }
+  }
+  const highMatches = [];
+  const dicMatches = [];
 
-  queries.forEach((query) => {
-    matches.push(...indicesOf(text, query, { caseSensitive, diacriticsSensitive }));
+  highQueries.forEach((query) => {
+    highMatches.push(
+      ...indicesOf(text, query, { caseSensitive, diacriticsSensitive })
+    );
   });
 
-  const highlights = mergeRange(matches);
+  dicQueries.forEach((query) => {
+    dicMatches.push(
+      ...indicesOf(text, query, { caseSensitive, diacriticsSensitive })
+    );
+  });
+
+  const highlights = mergeRange(highMatches);
+  const dictionaries = mergeRange(dicMatches);
+
+  console.log(highlights);
+  console.log(dictionaries);
 
   const chunks = [];
   let lastEnd = 0;

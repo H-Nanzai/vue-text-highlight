@@ -1,24 +1,32 @@
 <script>
-import highlightChunks from './highlightChunks';
+import highlightChunks from "./highlightChunks";
+import dictionaryChunks from "./dictionaryChunks";
 
 const classAndStyleTypes = [Object, Array, String];
 
 export default {
-  name: 'text-highlight',
+  name: "text-highlight",
   props: {
-    queries: [Array, String, RegExp],
+    highQueries: [Array, String, RegExp],
+    dicQueries: [Array, String, RegExp],
     caseSensitive: Boolean,
     diacriticsSensitive: Boolean,
     highlightStyle: classAndStyleTypes,
     highlightClass: classAndStyleTypes,
     highlightComponent: {
       type: [String, Object],
-      default: 'mark',
+      default: "mark"
     },
+    dictionaryStyle: classAndStyleTypes,
+    dictionaryClass: classAndStyleTypes,
+    dictionaryComponent: {
+      type: [String, Object],
+      default: "span"
+    }
   },
   data() {
     return {
-      text: '',
+      text: ""
     };
   },
   /**
@@ -32,17 +40,14 @@ export default {
    */
   /* eslint-disable-next-line no-unused-vars */
   render(h) {
-    return <span>
-      {this.highlights
-        .map(({
-          text,
-          isHighlighted,
-          highlightIndex,
-        }) => (
-          !isHighlighted
-            ? text
-            : <this.highlightComponent
-              class={['text__highlight', this.highlightClass]}
+    return (
+      <span>
+        {this.highlights.map(({ text, isHighlighted, highlightIndex }) =>
+          !isHighlighted ? (
+            text
+          ) : (
+            <this.highlightComponent
+              class={["text__highlight", this.highlightClass]}
               style={this.highlightStyle}
               key={highlightIndex}
               index={highlightIndex}
@@ -51,42 +56,55 @@ export default {
             >
               {text}
             </this.highlightComponent>
-        ))}
-    </span>;
+          )
+        )}
+      </span>
+    );
   },
-  beforeMount() { this.setTextFromSlot(); },
-  beforeUpdate() { this.setTextFromSlot(); },
+  beforeMount() {
+    this.setTextFromSlot();
+  },
+  beforeUpdate() {
+    this.setTextFromSlot();
+  },
   methods: {
     setTextFromSlot() {
       const defaultSlot = this.$slots.default;
 
-      if (!defaultSlot) this.text = '';
-      else if (defaultSlot[0].tag !== undefined && process.env.NODE_ENV !== 'production') {
+      if (!defaultSlot) this.text = "";
+      else if (
+        defaultSlot[0].tag !== undefined &&
+        process.env.NODE_ENV !== "production"
+      ) {
         /* eslint-disable-next-line no-console */
-        console.warn('children of <text-highlight> must be a plain string.');
-        this.text = '';
+        console.warn("children of <text-highlight> must be a plain string.");
+        this.text = "";
       } else {
         this.text = defaultSlot[0].text;
       }
-    },
+    }
   },
   computed: {
     attributes() {
       return {
         props: this.$attrs,
-        on: this.$listeners,
+        on: this.$listeners
       };
     },
     highlights() {
       const {
         text,
-        queries,
+        highQueries,
+        dicQueries,
         caseSensitive,
-        diacriticsSensitive,
+        diacriticsSensitive
       } = this;
-      return highlightChunks(text, queries, { caseSensitive, diacriticsSensitive });
-    },
-  },
+      return highlightChunks(text, highQueries, dicQueries, {
+        caseSensitive,
+        diacriticsSensitive
+      });
+    }
+  }
 };
 </script>
 
